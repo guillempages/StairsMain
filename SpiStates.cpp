@@ -110,7 +110,7 @@ void OnOffState::process() {
         if (count % 2) {
           parent->getSpi()->send(CMD_LED_FADE_ON);
         } else {
-          parent->getSpi()->send(CMD_LED_FADE_OFF);
+          parent->getSpi()->send(CMD_LED_FADE | 0x07);
         }
         ++count;
     }
@@ -129,7 +129,7 @@ void OffOnState::process() {
     } else {
         SpiState::process();
         if (count % 2) {
-          parent->getSpi()->send(CMD_LED_FADE_OFF);
+          parent->getSpi()->send(CMD_LED_FADE | 0x07);
         } else {
           parent->getSpi()->send(CMD_LED_FADE_ON);
         }
