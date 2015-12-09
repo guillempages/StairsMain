@@ -11,7 +11,7 @@ void showState(uint8_t state) {
 }
 
 void SpiState::process() {
-    //parent->getStep(count).values[receiveValue] = parent->getSpi()->receive();
+    parent->getStep(count).values[receiveValue] = parent->getSpi()->receive();
 }
 
 void Init1State::process() {
@@ -29,7 +29,7 @@ void Init2State::process() {
     if (parent->getSpi()->receive() == CMD_INIT_2) {
         parent->getSpi()->execute(); // Sync all steps.
         parent->setStepCount(count);
-        parent->transition(new ReadIrState());
+        parent->transition(new OnOffState());
     } else {
         count++;
     }
@@ -93,4 +93,46 @@ void OffState::process() {
         parent->getSpi()->send(CMD_LED_FADE_OFF);
         ++count;
    }
+}
+
+void OnOffState::process() {
+    showState(8);
+    if (count > parent->getStepCount()) {
+        loopCount++;
+        if (loopCount >= ONOFF_LOOP_COUNT) {
+            parent->getSpi()->execute();
+            parent->transition(new OffOnState(SingleStep::LightThreshold));
+          } else {
+            count = 0;
+          }
+    } else {
+        SpiState::process();
+        if (count % 2) {
+          parent->getSpi()->send(CMD_LED_FADE_ON);
+        } else {
+          parent->getSpi()->send(CMD_LED_FADE_OFF);
+        }
+        ++count;
+    }
+}
+
+void OffOnState::process() {
+    showState(9);
+    if (count > parent->getStepCount()) {
+        loopCount++;
+        if (loopCount >= ONOFF_LOOP_COUNT) {
+            parent->getSpi()->execute();
+            parent->transition(new OnOffState(SingleStep::LightThreshold));
+          } else {
+            count = 0;
+          }
+    } else {
+        SpiState::process();
+        if (count % 2) {
+          parent->getSpi()->send(CMD_LED_FADE_OFF);
+        } else {
+          parent->getSpi()->send(CMD_LED_FADE_ON);
+        }
+        ++count;
+    }
 }

@@ -58,4 +58,20 @@ public:
     void process();
 };
 
+class OnOffState : public SpiState {
+public:
+    OnOffState(SingleStep::StepValues value = SingleStep::Dummy): SpiState("onoff", value), loopCount(0) {};
+    void process();
+private:
+    uint8_t loopCount;
+};
+
+class OffOnState : public SpiState {
+public:
+    OffOnState(SingleStep::StepValues value = SingleStep::Dummy): SpiState("offon", value), loopCount(0) {};
+    void process();
+  private:
+      uint8_t loopCount;
+};
+
 #endif //_SPI_STATES_H
