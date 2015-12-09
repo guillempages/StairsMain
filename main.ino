@@ -43,9 +43,9 @@ void setup() {
 
     command = CMD_LED_FADE;
 
-//    Spark.variable("steps", &stateMachineSpi->stepCount, INT);
-    Spark.variable("spiState", stateMachineSpi->currentStateName, STRING);
-    Spark.variable("tcpState", stateMachineTcp->currentStateName, STRING);
+//    Particle.variable("steps", &stateMachineSpi->stepCount, INT);
+    Particle.variable("spiState", stateMachineSpi->currentStateName, STRING);
+    Particle.variable("tcpState", stateMachineTcp->currentStateName, STRING);
 
 }
 
