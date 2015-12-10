@@ -29,7 +29,7 @@ void Init2State::process() {
     if (parent->getSpi()->receive() == CMD_INIT_2) {
         parent->getSpi()->execute(); // Sync all steps.
         parent->setStepCount(count);
-        parent->transition(new OnOffState());
+        parent->transition(new ReadIrState());
     } else {
         count++;
     }
@@ -39,7 +39,7 @@ void ReadIrState::process() {
     showState(3);
     if (count > parent->getStepCount()) {
         parent->getSpi()->execute();
-        parent->transition(new ReadIrState(SingleStep::IrValue));
+        parent->transition(new ReadLightState(SingleStep::IrValue));
     } else {
         SpiState::process();
         parent->getSpi()->send(CMD_GET_STEP);
@@ -62,12 +62,27 @@ void ReadLightState::process() {
 void ExecuteState::process() {
     showState(5);
     if (count > parent->getStepCount()) {
+        updateRunningLights();
         parent->getSpi()->execute();
-        parent->transition(new OnState(SingleStep::IrThreshold));
+        parent->transition(new ReadIrState(SingleStep::IrThreshold));
     } else {
         SpiState::process();
-        parent->getSpi()->send(CMD_GET_TEMPERATURE);
+        if (count == parent->runningLightId) {
+            parent->getSpi()->send(CMD_LED_SET_ON);
+        } else {
+            parent->getSpi()->send(CMD_LED_SET_OFF);
+        }
         ++count;
+    }
+}
+
+void ExecuteState::updateRunningLights() {
+    parent->runningLightId += parent->runningLightDirection;
+
+    if (parent->runningLightDirection != 0 &&
+            parent->runningLightId >= parent->getStepCount() || parent->runningLightId <= 0) {
+        //parent->runningLightId = -2;
+        parent->runningLightDirection *= -1;
     }
 }
 

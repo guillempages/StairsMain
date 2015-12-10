@@ -1,7 +1,12 @@
 #include "StateMachine.h"
 #include "ipconnection.h"
 
-StateMachine::StateMachine(State * initialState): currentState(initialState), steps(0) {
+StateMachine::StateMachine(State * initialState) :
+        stepCount(0),
+        runningLightId(-1),
+        runningLightDirection(0),
+        currentState(initialState),
+        steps(0) {
     currentState->getName().toCharArray(currentStateName, 63);
     currentState->setStateMachine(this);
     currentState->enter();

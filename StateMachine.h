@@ -29,6 +29,9 @@ public:
     char currentStateName[64];
     uint8_t stepCount;
 
+    uint8_t runningLightId;
+    uint8_t runningLightDirection;
+
 private:
     State * currentState;
     Tcp* tcp;

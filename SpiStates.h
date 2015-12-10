@@ -43,6 +43,7 @@ class ExecuteState : public SpiState {
 public:
     ExecuteState(SingleStep::StepValues value = SingleStep::Dummy) : SpiState("execute", value) {};
     void process();
+    void updateRunningLights();
 };
 
 /////////////
