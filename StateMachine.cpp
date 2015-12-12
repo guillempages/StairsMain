@@ -1,10 +1,12 @@
 #include "StateMachine.h"
 #include "ipconnection.h"
+#include "net_commands.h"
 
 StateMachine::StateMachine(State * initialState) :
         stepCount(0),
         runningLightId(-1),
         runningLightDirection(0),
+        currentMode(MODE_NORMAL),
         currentState(initialState),
         steps(0) {
     currentState->getName().toCharArray(currentStateName, 63);

@@ -75,4 +75,24 @@ public:
       uint8_t loopCount;
 };
 
+class RunningLightState : public SpiState {
+public:
+    RunningLightState(SingleStep::StepValues value = SingleStep::Dummy): SpiState("runningLight", value) {};
+    void process();
+    void updateRunningLights();
+};
+
+class RunningHoleState : public SpiState {
+public:
+    RunningHoleState(SingleStep::StepValues value = SingleStep::Dummy): SpiState("runningHole", value) {};
+    void process();
+    void updateRunningLights();
+};
+
+class CheckModeState : public SpiState {
+public:
+    CheckModeState(SingleStep::StepValues value = SingleStep::Dummy): SpiState("checkModeState", value) {};
+    void process();
+};
+
 #endif //_SPI_STATES_H
