@@ -6,6 +6,7 @@ StateMachine::StateMachine(State * initialState) :
         stepCount(0),
         runningLightId(-1),
         runningLightDirection(0),
+        previousMode(MODE_IDLE),
         currentMode(MODE_NORMAL),
         currentState(initialState),
         steps(0) {

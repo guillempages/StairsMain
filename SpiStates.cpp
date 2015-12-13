@@ -79,9 +79,8 @@ void ExecuteState::process() {
 
 void ExecuteState::updateRunningLights() {
     parent->runningLightId += parent->runningLightDirection;
-
     if (parent->runningLightDirection != 0 &&
-            (parent->runningLightId >= parent->getStepCount() || parent->runningLightId <= 0)) {
+            (parent->runningLightId > parent->getStepCount() || parent->runningLightId <= 0)) {
         parent->runningLightId = -1;
         parent->runningLightDirection = 0;
     }
@@ -114,13 +113,8 @@ void OffState::process() {
 void OnOffState::process() {
 //    showState(8);
     if (count > parent->getStepCount()) {
-        loopCount++;
-        if (loopCount >= ONOFF_LOOP_COUNT) {
-            parent->getSpi()->execute();
-            parent->transition(new OffOnState());
-          } else {
-            count = 0;
-          }
+        parent->getSpi()->execute();
+        parent->transition(new CheckModeState());
     } else {
         SpiState::process();
         if (count % 2) {
@@ -135,13 +129,8 @@ void OnOffState::process() {
 void OffOnState::process() {
 //    showState(9);
     if (count > parent->getStepCount()) {
-        loopCount++;
-        if (loopCount >= ONOFF_LOOP_COUNT) {
-            parent->getSpi()->execute();
-            parent->transition(new CheckModeState());
-          } else {
-            count = 0;
-          }
+        parent->getSpi()->execute();
+        parent->transition(new CheckModeState());
     } else {
         SpiState::process();
         if (count % 2) {
@@ -171,12 +160,12 @@ void RunningLightState::process() {
 }
 
 void RunningLightState::updateRunningLights() {
-    parent->runningLightId += parent->runningLightDirection;
-
-    if (parent->runningLightDirection != 0 &&
-            (parent->runningLightId >= parent->getStepCount() || parent->runningLightId <= 0)) {
-        parent->runningLightDirection *= -1;
+    if (parent->runningLightId >= parent->getStepCount()) {
+        parent->runningLightDirection = -1;
+    } else if (parent->runningLightId <= 1) {
+        parent->runningLightDirection = 1;
     }
+    parent->runningLightId += parent->runningLightDirection;
 }
 
 void RunningHoleState::process() {
@@ -197,21 +186,28 @@ void RunningHoleState::process() {
 }
 
 void RunningHoleState::updateRunningLights() {
-    parent->runningLightId += parent->runningLightDirection;
-
-    if (parent->runningLightDirection != 0 &&
-            (parent->runningLightId >= parent->getStepCount() || parent->runningLightId <= 0)) {
-        parent->runningLightDirection *= -1;
+    if (parent->runningLightId >= parent->getStepCount()) {
+        parent->runningLightDirection = -1;
+    } else if (parent->runningLightId <= 1) {
+        parent->runningLightDirection = 1;
     }
+    parent->runningLightId += parent->runningLightDirection;
 }
 
 void CheckModeState::process() {
-    showState(parent->currentMode);
-    switch (parent->currentMode) {
+    uint8_t currentMode = parent->currentMode;
+    showState(currentMode);
+    switch (currentMode) {
         case MODE_NORMAL:
-            parent->runningLightId = -1;
-            parent->runningLightDirection = 0;
-            parent->transition(new ReadIrState(receiveValue));
+            if (parent->previousMode != currentMode) {
+                parent->runningLightId = -1;
+                parent->runningLightDirection = 0;
+            }
+            if (parent->previousMode == MODE_IDLE) {
+                parent->transition(new Init1State());
+            } else {
+                parent->transition(new ReadIrState(receiveValue));
+            }
             break;
         case MODE_ON:
             parent->transition(new OnState(receiveValue));
@@ -219,21 +215,46 @@ void CheckModeState::process() {
         case MODE_OFF:
             parent->transition(new OffState(receiveValue));
             break;
+        case MODE_BLINK:
+            if (parent->previousMode == MODE_OFF) {
+                parent->transition(new OnState(receiveValue));
+                currentMode = MODE_ON;
+            } else {
+                parent->transition(new OffState(receiveValue));
+                currentMode = MODE_OFF;
+            }
+            delay(ONOFF_DELAY);
+            break;
         case MODE_BLINK_ALT:
-            parent->transition(new OnOffState(receiveValue));
+            if (parent->previousMode == MODE_OFF) {
+                parent->transition(new OffOnState(receiveValue));
+                currentMode = MODE_ON;
+            } else {
+                parent->transition(new OnOffState(receiveValue));
+                currentMode = MODE_OFF;
+            }
+            delay(ONOFF_DELAY);
             break;
         case MODE_RUNNING_LIGHT:
-            parent->runningLightId = 2;
-            parent->runningLightDirection = 1;
-            parent->transition(new RunningLightState());
+            if (parent->previousMode != currentMode) {
+                parent->runningLightId = 0;
+                parent->runningLightDirection = 1;
+            }
+            parent->transition(new RunningLightState(receiveValue));
+            delay(RUNNING_LIGHT_DELAY);
             break;
         case MODE_RUNNING_HOLE:
-            parent->runningLightId = 2;
-            parent->runningLightDirection = 1;
-            parent->transition(new RunningHoleState());
+            if (parent->previousMode != currentMode) {
+                parent->runningLightId = 0;
+                parent->runningLightDirection = 1;
+            }
+            parent->transition(new RunningHoleState(receiveValue));
+            delay(RUNNING_LIGHT_DELAY);
             break;
         case MODE_IDLE:
         default:
-            delay(200);
+            delay(IDLE_DELAY);
     }
+
+    parent->previousMode = currentMode;
 }

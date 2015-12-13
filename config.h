@@ -18,9 +18,11 @@ const int sendLength = 20;
 
 const bool HUMAN = false;
 
-const uint8_t SPI_EXEC_DELAY = 1;
+const uint8_t SPI_EXEC_DELAY = 2;
 const uint8_t SPI_BIT_DELAY = 0;
 
-const uint8_t ONOFF_LOOP_COUNT = 10;
+const int IDLE_DELAY = 200;
+const int ONOFF_DELAY = 500;
+const int RUNNING_LIGHT_DELAY = 300;
 
 #endif //_MY_CONFIG_H_

@@ -32,6 +32,7 @@ public:
     uint8_t runningLightId;
     uint8_t runningLightDirection;
 
+    uint8_t previousMode;
     uint8_t currentMode;
 
 private:
