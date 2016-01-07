@@ -18,8 +18,11 @@ void TcpConnected::enter() {
     digitalWrite(connectedLed, HIGH);
     if (HUMAN) {
         parent->getTcp()->write(String(parent->getStepCount()));
+        parent->getTcp()->write(String(" "));
+        parent->getTcp()->write(String(parent->currentMode));
     } else {
         parent->getTcp()->write(String((char) parent->getStepCount()));
+        parent->getTcp()->write(String((char) parent->currentMode));
     }
     parent->getTcp()->write(String('\n'));
 }
