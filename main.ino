@@ -43,9 +43,10 @@ void setup() {
 
     command = CMD_LED_FADE;
 
-//    Particle.variable("steps", &stateMachineSpi->stepCount, INT);
-    Particle.variable("spiState", stateMachineSpi->currentStateName, STRING);
-    Particle.variable("tcpState", stateMachineTcp->currentStateName, STRING);
+//    Particle.variable("steps", stateMachineSpi->stepCount);
+    Particle.variable("currentMode", stateMachineSpi->currentMode);
+    Particle.variable("spiState", stateMachineSpi->currentStateName);
+    Particle.variable("tcpState", stateMachineTcp->currentStateName);
 
 }
 
