@@ -23,6 +23,7 @@ public:
     void transition(State * newState);
 
     virtual uint8_t getStepCount() { return stepCount;};
+    void setMode(uint8_t mode);
     void setStepCount(uint8_t count);
     virtual SingleStep& getStep(uint8_t index);
 

@@ -39,6 +39,9 @@ void StateMachine::setStepCount(uint8_t count) {
     steps = new SingleStep[stepCount];
 }
 
+void StateMachine::setMode(uint8_t mode) {
+    currentMode = mode;
+}
 
 TcpStateMachine::TcpStateMachine(State* initialState, StateMachine* spiMachine) :
     StateMachine(initialState),
