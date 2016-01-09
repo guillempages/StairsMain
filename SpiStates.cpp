@@ -195,7 +195,7 @@ void RunningHoleState::updateRunningLights() {
 }
 
 void CheckModeState::process() {
-    uint8_t currentMode = parent->currentMode;
+    uint8_t currentMode = parent->getMode();
     showState(currentMode);
     switch (currentMode) {
         case MODE_NORMAL:

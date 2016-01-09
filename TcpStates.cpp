@@ -1,4 +1,5 @@
 #include "config.h"
+#include "net_commands.h"
 #include "TcpStates.h"
 #include "ipconnection.h"
 #include "SingleStep.h"
@@ -19,10 +20,10 @@ void TcpConnected::enter() {
     if (HUMAN) {
         parent->getTcp()->write(String(parent->getStepCount()));
         parent->getTcp()->write(String(" "));
-        parent->getTcp()->write(String(parent->currentMode));
+        parent->getTcp()->write(String(parent->getMode()));
     } else {
         parent->getTcp()->write(String((char) parent->getStepCount()));
-        parent->getTcp()->write(String((char) parent->currentMode));
+        parent->getTcp()->write(String((char) parent->getMode()));
     }
     parent->getTcp()->write(String('\n'));
 }
@@ -30,6 +31,12 @@ void TcpConnected::enter() {
 void TcpConnected::process() {
     parent->getTcp()->tick();
     if (parent->getTcp()->isConnected()) {
+        String readValue = parent->getTcp()->read();
+        if (readValue.length() >= 2) {
+            if (readValue[0] == NET_CMD_CHANGE_MODE) {
+                parent->setMode(readValue[1]);
+            }
+        }
         if (parent->getStepCount() > 0) {
             SingleStep step = parent->getStep(count);
             if (HUMAN) {

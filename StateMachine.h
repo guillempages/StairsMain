@@ -23,7 +23,8 @@ public:
     void transition(State * newState);
 
     virtual uint8_t getStepCount() { return stepCount;};
-    void setMode(uint8_t mode);
+    virtual void setMode(uint8_t mode);
+    virtual uint8_t getMode() {return currentMode;};
     void setStepCount(uint8_t count);
     virtual SingleStep& getStep(uint8_t index);
 
@@ -52,6 +53,8 @@ public:
 
     virtual uint8_t getStepCount() {return spiStateMachine->getStepCount();}
     virtual SingleStep& getStep(uint8_t index) {return spiStateMachine->getStep(index);}
+    virtual void setMode(uint8_t mode) {spiStateMachine->setMode(mode);}
+    virtual uint8_t getMode() {return spiStateMachine->getMode();}
 private:
     StateMachine * spiStateMachine;
 };
