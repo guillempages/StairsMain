@@ -35,12 +35,10 @@ Tcp::Tcp(unsigned int port) : server(port), sendBuffer(bufferSize), recvBuffer(b
 
 void Tcp::tick() {
     if (!isConnected()) {
-        digitalWrite(connectedLed, LOW);
         client.stop();
         client = server.available();
         recvBuffer.clear();
     } else {
-        digitalWrite(connectedLed, HIGH);
         unsigned int count = client.available();
         for (unsigned int i = 0; i < count; i++) {
             recvBuffer.put(client.read());
