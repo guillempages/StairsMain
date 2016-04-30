@@ -29,6 +29,7 @@ public:
     void tick();
     String read();
     void write(String value);
+    void disconnect();
 
 private:
     TCPServer server;

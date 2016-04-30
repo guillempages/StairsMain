@@ -64,3 +64,7 @@ void Tcp::write(String value) {
         sendBuffer.put(value.charAt(i));
     }
 }
+
+void Tcp::disconnect() {
+    client.stop();
+}
