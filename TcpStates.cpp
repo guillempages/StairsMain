@@ -33,8 +33,14 @@ void TcpConnected::process() {
     if (parent->getTcp()->isConnected()) {
         String readValue = parent->getTcp()->read();
         if (readValue.length() >= 2) {
-            if (readValue[0] == NET_CMD_CHANGE_MODE) {
-                parent->setMode(readValue[1]);
+            switch (readValue[0]) {
+                case NET_CMD_CHANGE_MODE:
+                    parent->setMode(readValue[1]);
+                    break;
+                case NET_CMD_DISCONNECT:
+                    parent->getTcp()->disconnect();
+                    parent->transition(new TcpDisconnected());
+                    break;
             }
         }
         if (parent->getStepCount() > 0) {

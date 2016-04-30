@@ -4,6 +4,7 @@
 #define NET_CMD_NOOP 0x00
 
 #define NET_CMD_CHANGE_MODE 0x10
+#define NET_CMD_DISCONNECT 0x20
 
 
 // Modes:
