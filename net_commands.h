@@ -15,5 +15,6 @@
 #define MODE_BLINK_ALT 0x05 // Blink lights alternating
 #define MODE_RUNNING_LIGHT 0x06 // Move a single LED up and down.
 #define MODE_RUNNING_HOLE 0x07 // Light all LEDS except one and move that up and down.
+#define MODE_LAST_MODE MODE_RUNNING_HOLE
 
 #endif NET_COMMANDS_H
