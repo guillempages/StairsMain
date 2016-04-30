@@ -71,14 +71,15 @@ void TcpConnected::writeStateHuman(const SingleStep& step) {
 }
 
 void TcpConnected::writeStateBinary(const SingleStep& step) {
-    String singleStep("00000\n");
+    String singleStep("01234\n");
 
-    singleStep.setCharAt(0, count);
-    singleStep.setCharAt(1, step.values[SingleStep::IrValue]);
-    singleStep.setCharAt(2,step.values[SingleStep::LightValue]);
-    singleStep.setCharAt(3,step.values[SingleStep::IrThreshold]);
-    singleStep.setCharAt(4,step.values[SingleStep::LightThreshold]);
-    singleStep.setCharAt(5,'\n');
+    uint8_t index = 0;
+    singleStep.setCharAt(index++, count);
+    singleStep.setCharAt(index++, step.values[SingleStep::IrValue]);
+    singleStep.setCharAt(index++,step.values[SingleStep::LightValue]);
+    singleStep.setCharAt(index++,step.values[SingleStep::IrThreshold]);
+    singleStep.setCharAt(index++,step.values[SingleStep::LightThreshold]);
+    singleStep.setCharAt(index++,'\n');
 
     parent->getTcp()->write(singleStep);
 }
