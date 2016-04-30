@@ -40,7 +40,9 @@ void StateMachine::setStepCount(uint8_t count) {
 }
 
 void StateMachine::setMode(uint8_t mode) {
-    currentMode = mode;
+    if (mode >= 0 && mode < MODE_LAST_MODE) {
+        currentMode = mode;
+    }
 }
 
 TcpStateMachine::TcpStateMachine(State* initialState, StateMachine* spiMachine) :
