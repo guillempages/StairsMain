@@ -4,13 +4,18 @@
 #include <spark_wiring.h>
 
 // Outputs
-const int led0 = A2;
+const int led0 = A7;
 const int connectedLed = D7;
 
-const int ss = D3;
-const int sck = D4;
-const int miso = D5;
-const int mosi = D6;
+const int ss = D5;   // D3
+const int sck = D4;  // D4
+const int miso = D3; // D5
+const int mosi = D2; // D6
+
+const int ss1 = A2;
+const int sck1 = A3;
+const int miso1 = A4;
+const int mosi1 = A5;
 
 const int tcpPort = 2222;
 const int bufferSize = 255;
